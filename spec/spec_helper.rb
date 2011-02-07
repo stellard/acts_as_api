@@ -1,18 +1,38 @@
-begin
-  #require 'spec'
-rescue LoadError
-  require 'rubygems' unless ENV['NO_RUBYGEMS']
-  gem 'rspec'
-  require 'spec'
-end
+# begin
+#   #require 'spec'
+# rescue LoadError
+#   require 'rubygems' unless ENV['NO_RUBYGEMS']
+#   gem 'rspec'
+#   require 'spec'
+# end
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'rubygems'
-require 'active_support'
-require 'active_record'
-require 'action_controller'
+# $:.unshift(File.dirname(__FILE__) + '/../lib')
+# require 'rubygems'
+# require 'active_support'
+# require 'active_record'
+# require 'action_controller'
+# 
+# require 'acts_as_api'
 
-require 'acts_as_api'
+# Configure Rails Envinronment
+ENV["RAILS_ENV"] = "test"
 
-require 'spec_models'
+require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+require "rails/test_help"
 
+ActionMailer::Base.delivery_method = :test
+ActionMailer::Base.perform_deliveries = true
+ActionMailer::Base.default_url_options[:host] = "test.com"
+
+Rails.backtrace_cleaner.remove_silencers!
+
+# Configure capybara for integration testing
+require "capybara/rails"
+Capybara.default_driver   = :rack_test
+Capybara.default_selector = :css
+
+# Run any available migration
+ActiveRecord::Migrator.migrate File.expand_path("../dummy/db/migrate/", __FILE__)
+
+# Load support files
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
