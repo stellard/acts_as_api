@@ -5,3 +5,6 @@ Gemfile.lock
 test
 acts_as_api.tmproj
 .rvmrc
+spec/dummy/db/*.sqlite3
+spec/dummy/log/*.log
+spec/dummy/tmp/**/*
