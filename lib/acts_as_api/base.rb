@@ -47,6 +47,15 @@ module ActsAsApi
 
 
     module InstanceMethods
+      
+      def serializable_hash(options = nil)
+        options = options.try(:clone) || {}
+        if template = options.delete(:api_template)
+          as_api_response(template)
+        else
+          super(options)
+        end
+      end
 
       # Creates the api response of the model and returns it as a Hash.
       def as_api_response(api_template)
