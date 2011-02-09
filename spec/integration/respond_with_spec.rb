@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "rails integration" do
+describe "respond_with integration" do
   
   it "should be true" do
     assert_kind_of Dummy::Application, Rails.application
@@ -17,10 +17,10 @@ describe "rails integration" do
     Task.delete_all
   end
   
-  describe "respond_with" do
+  describe "users" do
     before do
       User.acts_as_api
-      User.api_accessible :v1_default => [ :first_name, :last_name ]
+      User.api_accessible :default => [ :first_name, :last_name ]
     end
     
     describe "index" do
@@ -71,6 +71,64 @@ describe "rails integration" do
       end
     end
   
+  end
+  
+  describe "tasks" do
+    before do
+      @destroy_deathstar = @luke.tasks.create({ :heading => "Destroy Deathstar", :description => "XWing, Shoot, BlowUp",  :time_spent => 30,  :done => true })
+      @study_with_yoda   = @luke.tasks.create({ :heading => "Study with Yoda",   :description => "Jedi Stuff, ya know",   :time_spent => 60,  :done => true })
+      @win_rebellion     = @luke.tasks.create({ :heading => "Win Rebellion",     :description => "no idea yet...",        :time_spent => 180, :done => false })
+    end
+    
+    describe "index" do
+      before do
+        Task.acts_as_api
+        Task.api_accessible :default => [ :heading, :done ]
+        visit user_tasks_path(@luke, :format => :json)
+        @response = ActiveSupport::JSON.decode(last_response.body)
+      end
+      
+      it "should return an array" do
+        @response.should be_instance_of(Array)
+      end
+
+      it "should contain all the records" do
+        @response.length.should == 3
+      end
+      
+      it "each record should be correct" do
+        @response.each do |user|
+          user["task"].should be_instance_of(Hash)
+          user["task"]["heading"].should_not be_blank
+          user["task"]["done"].should_not be_nil
+          user["task"]["description"].should be_nil
+        end
+      end
+    end
+    
+    describe "show" do
+      before do
+        visit user_task_path(@luke, @destroy_deathstar, :format => :json)
+        @response = ActiveSupport::JSON.decode(last_response.body)
+      end
+      
+      it "should be a hash" do
+        @response.should be_instance_of(Hash)
+        @response["task"].should be_instance_of(Hash)
+      end
+      
+      it "should contain heading" do
+        @response["task"]["heading"].should == 'Destroy Deathstar'
+      end
+      
+      it "should contain done" do
+        @response["task"]["done"].should == true
+      end
+      
+      it "should not contain time_spent" do
+         @response["task"]["time_spent"].should be_nil
+      end
+    end
   end
 
 end
