@@ -12,47 +12,57 @@ describe RespondWithUsersController do
   end
 
   describe 'xml responses' do
-
+  
     describe 'get all users' do
-
+  
       before(:each) do
         get :index, :format => 'xml', :api_template => :name_only
       end
-
+  
       it "should have a root node named users" do
         response_body.should have_selector("users")
       end
-
+  
       it "should contain all users" do
         response_body.should have_selector("users > user") do |users|
           users.size.should eql(3)
         end
       end
-
+  
       it "should contain the specified attributes" do
         response_body.should have_selector("users > user > first-name")
         response_body.should have_selector("users > user > last-name")
       end
-
+  
+  			it "should not contain the unspecified attributes" do
+  				response_body.should_not have_selector("users > user > age")
+  				response_body.should_not have_selector("users > user > active")
+  			end
+  
     end
-
+  
     describe 'get a single user' do
-
+  
       before(:each) do
         get :show, :format => 'xml', :api_template => :name_only, :id => @luke.id
       end
-
+  
       it "should have a root node named user" do
         response_body.should have_selector("user")
       end
-
+  
       it "should contain the specified attributes" do
         response_body.should have_selector("user > first-name")
         response_body.should have_selector("user > last-name")
       end
-
+  
+ 			it "should not contain the unspecified attributes" do
+ 				response_body.should_not have_selector("user > age")
+ 				response_body.should_not have_selector("user > active")
+ 			end
+  
     end
-
+  
   end
 	
   describe 'json responses' do
@@ -71,6 +81,11 @@ describe RespondWithUsersController do
         response_body_json.first["user"].should have_key("first_name")
         response_body_json.first["user"].should have_key("last_name")
       end
+
+			it "should not contain the unspecified attributes" do
+			  response_body_json.first["user"].should_not have_key("age")
+        response_body_json.first["user"].should_not have_key("active")
+			end
 
       it "should contain the specified values" do
         response_body_json.first["user"]["first_name"].should eql("Luke")
@@ -93,6 +108,11 @@ describe RespondWithUsersController do
         response_body_json["user"].should have_key("first_name")
         response_body_json["user"].should have_key("last_name")
       end
+			
+			it "should not contain the unspecified attributes" do
+			  response_body_json["user"].should_not have_key("age")
+        response_body_json["user"].should_not have_key("active")
+			end
 
       it "should contain the specified values" do
         response_body_json["user"]["first_name"].should eql("Luke")

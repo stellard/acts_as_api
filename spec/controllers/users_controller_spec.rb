@@ -37,6 +37,11 @@ describe UsersController, :orm => :active_record do
         response_body.should have_selector("users > user > last-name")
       end
 
+      it "should not contain the unspecified attributes" do
+        response_body.should_not have_selector("users > user > age")
+        response_body.should_not have_selector("users > user > active")
+      end
+
     end
 
     describe 'get a single user' do
@@ -52,6 +57,11 @@ describe UsersController, :orm => :active_record do
       it "should contain the specified attributes" do
         response_body.should have_selector("user > first-name")
         response_body.should have_selector("user > last-name")
+      end
+
+      it "should not contain the unspecified attributes" do
+        response_body.should_not have_selector("user > age")
+        response_body.should_not have_selector("user > active")
       end
 
     end
@@ -80,6 +90,11 @@ describe UsersController, :orm => :active_record do
         response_body_json["users"].first.should have_key("last_name")
       end
 
+      it "should not contain the unspecified attributes" do
+        response_body_json["users"].first.should_not have_key("age")
+        response_body_json["users"].first.should_not have_key("active")
+      end
+
       it "should contain the specified values" do
         response_body_json["users"].first["first_name"].should eql("Luke")
         response_body_json["users"].first["last_name"].should eql("Skywalker")
@@ -100,6 +115,11 @@ describe UsersController, :orm => :active_record do
       it "should contain the specified attributes" do
         response_body_json["user"].should have_key("first_name")
         response_body_json["user"].should have_key("last_name")
+      end
+
+      it "should not contain the unspecified attributes" do
+        response_body_json["user"].should_not have_key("age")
+        response_body_json["user"].should_not have_key("active")
       end
 
       it "should contain the specified values" do

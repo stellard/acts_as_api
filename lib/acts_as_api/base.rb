@@ -81,6 +81,13 @@ module ActsAsApi
 					super(options)
 				end
 			end
+			
+			def to_xml(options = {}, &block)
+				options = options.try(:clone) || {}
+				run_with_template(options.delete(:api_template)) do
+					super(options, &block)
+				end
+      end
 
       # Creates the api response of the model and returns it as a Hash.
       def as_api_response(api_template)
