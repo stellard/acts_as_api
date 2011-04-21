@@ -1,7 +1,10 @@
+$:.unshift(File.dirname(__FILE__) + '/../lib')
+$:.unshift(File.dirname(__FILE__))
+
 require "rails_app/config/environment"
 require 'rspec/rails'
+require 'ruby-debug'
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
 require 'acts_as_api'
 
 ENV["RAILS_ENV"] = "test"
@@ -15,3 +18,9 @@ load_schema = lambda {
   # ActiveRecord::Migrator.up('db/migrate') # use migrations
 }
 silence_stream(STDOUT, &load_schema)
+
+
+RSpec.configure do |config|
+  config.filter_run :focus => true
+  config.run_all_when_everything_filtered = true
+end

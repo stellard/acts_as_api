@@ -59,6 +59,28 @@ module ActsAsApi
     end
 
     module InstanceMethods
+			
+			def attributes
+				if @_api_template
+					as_api_response(@_api_template).stringify_keys
+				else
+					super
+				end
+			end
+			
+			def run_with_template(template = nil)
+				@_api_template = template
+				result = yield
+				@_api_template = nil
+				result
+			end
+			
+			def as_json(options = nil)
+			  options = options.try(:clone) || {}
+				run_with_template(options.delete(:api_template)) do
+					super(options)
+				end
+			end
 
       # Creates the api response of the model and returns it as a Hash.
       def as_api_response(api_template)
