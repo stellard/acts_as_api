@@ -11,59 +11,59 @@ describe RespondWithUsersController do
     User.delete_all
   end
 
-  describe 'xml responses' do
-  
-    describe 'get all users' do
-  
-      before(:each) do
-        get :index, :format => 'xml', :api_template => :name_only
-      end
-  
-      it "should have a root node named users" do
-        response_body.should have_selector("users")
-      end
-  
-      it "should contain all users" do
-        response_body.should have_selector("users > user") do |users|
-          users.size.should eql(3)
-        end
-      end
-  
-      it "should contain the specified attributes" do
-        response_body.should have_selector("users > user > first-name")
-        response_body.should have_selector("users > user > last-name")
-      end
-  
-  			it "should not contain the unspecified attributes" do
-  				response_body.should_not have_selector("users > user > age")
-  				response_body.should_not have_selector("users > user > active")
-  			end
-  
-    end
-  
-    describe 'get a single user' do
-  
-      before(:each) do
-        get :show, :format => 'xml', :api_template => :name_only, :id => @luke.id
-      end
-  
-      it "should have a root node named user" do
-        response_body.should have_selector("user")
-      end
-  
-      it "should contain the specified attributes" do
-        response_body.should have_selector("user > first-name")
-        response_body.should have_selector("user > last-name")
-      end
-  
- 			it "should not contain the unspecified attributes" do
- 				response_body.should_not have_selector("user > age")
- 				response_body.should_not have_selector("user > active")
- 			end
-  
-    end
-  
-  end
+  # describe 'xml responses' do
+  # 
+  #   describe 'get all users' do
+  # 
+  #     before(:each) do
+  #       get :index, :format => 'xml', :api_template => :name_only
+  #     end
+  # 
+  #     it "should have a root node named users" do
+  #       response_body.should have_selector("users")
+  #     end
+  # 
+  #     it "should contain all users" do
+  #       response_body.should have_selector("users > user") do |users|
+  #         users.size.should eql(3)
+  #       end
+  #     end
+  # 
+  #     it "should contain the specified attributes" do
+  #       response_body.should have_selector("users > user > first-name")
+  #       response_body.should have_selector("users > user > last-name")
+  #     end
+  # 
+  # 			it "should not contain the unspecified attributes" do
+  # 				response_body.should_not have_selector("users > user > age")
+  # 				response_body.should_not have_selector("users > user > active")
+  # 			end
+  # 
+  #   end
+  # 
+  #   describe 'get a single user' do
+  # 
+  #     before(:each) do
+  #       get :show, :format => 'xml', :api_template => :name_only, :id => @luke.id
+  #     end
+  # 
+  #     it "should have a root node named user" do
+  #       response_body.should have_selector("user")
+  #     end
+  # 
+  #     it "should contain the specified attributes" do
+  #       response_body.should have_selector("user > first-name")
+  #       response_body.should have_selector("user > last-name")
+  #     end
+  # 
+  #  			it "should not contain the unspecified attributes" do
+  #  				response_body.should_not have_selector("user > age")
+  #  				response_body.should_not have_selector("user > active")
+  #  			end
+  # 
+  #   end
+  # 
+  # end
 	
   describe 'json responses' do
 
